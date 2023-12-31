@@ -25,6 +25,7 @@
         android:id="@+id/goToGameSettings"
         android:layout_width="297dp"
         android:layout_height="100dp"
+        android:onClick="goToGameSettings"
         android:text="PLAY GAME"
         app:layout_constraintBottom_toTopOf="@+id/goToInfoMenu"
         app:layout_constraintEnd_toEndOf="parent"
