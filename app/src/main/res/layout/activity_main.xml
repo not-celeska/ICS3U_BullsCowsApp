@@ -36,6 +36,7 @@
         android:id="@+id/goToInfoMenu"
         android:layout_width="304dp"
         android:layout_height="96dp"
+        android:onClick="goToInfoMenu"
         android:text="INFO"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

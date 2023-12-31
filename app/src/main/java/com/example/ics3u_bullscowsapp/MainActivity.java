@@ -15,7 +15,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToInfoMenu(View view) {
-//        Intent intent = new Intent(this, )
+        Intent intent = new Intent(this, InfoActivity.class);
+        startActivity(intent);
     }
 
 }

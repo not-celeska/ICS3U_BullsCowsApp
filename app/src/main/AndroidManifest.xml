@@ -13,6 +13,11 @@
         android:theme="@style/Theme.ICS3U_BullsCowsApp"
         tools:targetApi="31">
         <activity
+            android:name=".GameSettingsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_game_settings"
+            android:theme="@style/Theme.ICS3U_BullsCowsApp" />
+        <activity
             android:name=".InfoActivity"
             android:exported="false" />
         <activity
