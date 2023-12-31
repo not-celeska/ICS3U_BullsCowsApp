@@ -1,66 +1,72 @@
 package com.example.ics3u_bullscowsapp;
-
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
-import java.util.Random;
+// Dont worry about that stuff..
+
 
 public class GameplayActivity extends AppCompatActivity {
 
-    int numDigits;
+    // Correct number variables.
+    int numDigitsInCorrectNumber;
+    String correctNumber; // String is required for 0123 possibility.
+
+    // Guess number variables.
+    String guess;
+    TextView guessDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gameplay);
 
-        TextView correctNumberShow = findViewById(R.id.correctNumberDisplay);
-        numDigits = getIntent().getIntExtra("numberOfDigits", 4);
+        // Initialize textfeilds, etc..
+        TextView correctNumberShow = findViewById(R.id.correctNumberDisplay); // will remove this
+        guessDisplay = findViewById(R.id.guessDisplay);
 
-        // GAME START
 
-        correctNumberShow.setText(generateRandomNumber(numDigits) + "");
+        numDigitsInCorrectNumber = getIntent().getIntExtra("numberOfDigits", 4);
+        guess = "";
 
     }
 
+    // Start main game.
     public void startGame(){
 
     }
 
-    // GENERATE RANDOM NUMBER: Just generates a random number with the length of numDigits.
-    public static int generateRandomNumber(int numDigits)
+    public void addNumberToGuess(char number)
     {
-        Random numberGenerator = new Random();
-        String randomNumber = "";
-
-        // 1. We will generate [numDigits] random numbers from 0-9.
-        for (int i = 0; i < numDigits; i++)
+        if (guess.length() < numDigitsInCorrectNumber)
         {
-            int randomDigit;
-
-            // a) check i: 0123 cannot happen <-- conversion from string to integer will cause it to become 123.
-//            if (i == 0)
-//            {
-//                randomDigit = numberGenerator.nextInt(1, 10)
-//            }
-//            else
-//            {
-                randomDigit = numberGenerator.nextInt(/*0, */10);
-//            }
-
-            // b) Make sure each number in the integer is unique; helps us out later on when checking Bulls and Cows.
-            if (randomNumber.contains(String.valueOf(randomDigit)))
-            {
-                numDigits++; // This has the for loop go on one more time.
-            }
-            else
-            {
-                randomNumber += randomDigit; // Adds it to the random number.
-            }
+            // TODO: Check if the number has been entered before <-- give user a warning.
+            guess += number;
+            guessDisplay.setText(guess); // updates the text
         }
-
-        return Integer.parseInt(randomNumber);
     }
+
+    public void backspace(View view) {
+        if (guess.length() > 0) {
+            guess = guess.substring(0, (guess.length() - 1)); // returns the string without the last character.
+            guessDisplay.setText(guess); // updates the text
+        }
+    }
+
+    // == TODO: This is meh.. Try to make this easier..
+    public void addOne(View view) { addNumberToGuess('1'); }
+    public void addTwo(View view) { addNumberToGuess('2'); }
+    public void addThree(View view) { addNumberToGuess('3'); }
+    public void addFour(View view) { addNumberToGuess('4'); }
+    public void addFive(View view) { addNumberToGuess('5'); }
+    public void addSix(View view) { addNumberToGuess('6'); }
+    public void addSeven(View view) { addNumberToGuess('7'); }
+    public void addEight(View view) { addNumberToGuess('8'); }
+    public void addNine(View view) { addNumberToGuess('9'); }
+    public void addZero(View view) { addNumberToGuess('0'); }
+
+
+
 
 }
