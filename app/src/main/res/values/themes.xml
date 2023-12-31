@@ -1,0 +1,9 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.ICS3U_BullsCowsApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:colorPrimary">@color/turquoise_light</item>
+        <item name="colorPrimaryDark">@color/turquoise_dark</item> <!-- Set primary dark color to black -->
+    </style>
+
+    <style name="Theme.ICS3U_BullsCowsApp" parent="Base.Theme.ICS3U_BullsCowsApp" />
+</resources>
