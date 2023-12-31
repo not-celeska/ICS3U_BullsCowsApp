@@ -20,7 +20,7 @@ public class GameSettingsActivity extends AppCompatActivity {
         howManyDigits = findViewById(R.id.howManyDigits);
         howManyDigits.setKeyProgressIncrement(1);
         howManyDigits.setMax(9); // actually 8
-        howManyDigits.setMin(2);
+        howManyDigits.setMin(3);
 
         numDigits = findViewById(R.id.numberOfDigits);
 
@@ -34,7 +34,7 @@ public class GameSettingsActivity extends AppCompatActivity {
 
                 int alignedProgress = Math.round((float) progress / notchValue) * notchValue;
 
-                numDigits.setText("NUM DIGITS = " + (alignedProgress - 1));
+                numDigits.setText("" + (alignedProgress - 1));
 
                 seekBar.setProgress(alignedProgress);
 
@@ -56,8 +56,9 @@ public class GameSettingsActivity extends AppCompatActivity {
         finish();
     }
 
-    public void playGame(View view) {
+    public void goToGameplayScreen(View view) {
         Intent intent = new Intent(this, GameplayActivity.class);
-        intent.putExtra("numberOfDigits", howManyDigits.getKeyProgressIncrement());
+        intent.putExtra("numberOfDigits", Integer.parseInt(String.valueOf(numDigits.getText())));
+        startActivity(intent);
     }
 }
