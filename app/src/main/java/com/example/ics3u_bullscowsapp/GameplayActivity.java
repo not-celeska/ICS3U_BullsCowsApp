@@ -73,7 +73,14 @@ public class GameplayActivity extends AppCompatActivity {
             // TODO: Check if the number has been entered before <-- give user a warning.
             guess += number;
             guessDisplay.setText(guess); // updates the text
+            if (guess.length() == numDigitsInCorrectNumber) {
+                errorMessageDisplay.setText("");
+            }
+            else {
+                errorMessageDisplay.setText("* Needs to be " + (numDigitsInCorrectNumber - guess.length()) + " numbers longer");
+            }
         }
+
     }
 
     public void submit(View view) {
@@ -89,7 +96,9 @@ public class GameplayActivity extends AppCompatActivity {
             totalGuesses++;
 
             // win condition..
+            if (guessFeedback[BULLS] == 4) {
 
+            }
 
 
         } else {
@@ -101,6 +110,9 @@ public class GameplayActivity extends AppCompatActivity {
         if (guess.length() > 0) {
             guess = guess.substring(0, (guess.length() - 1)); // returns the string without the last character.
             guessDisplay.setText(guess); // updates the text
+            if (!(guess.length() == numDigitsInCorrectNumber)) {
+                errorMessageDisplay.setText("* Needs to be " + (numDigitsInCorrectNumber - guess.length()) + " numbers longer");
+            }
         }
     }
 
