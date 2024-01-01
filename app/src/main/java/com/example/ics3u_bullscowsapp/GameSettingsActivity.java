@@ -1,40 +1,52 @@
+// == FILE LOCATION ===================
 package com.example.ics3u_bullscowsapp;
 
+// == IMPORTS ==================================
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+// == GAME SETTINGS MENU ====================================
 public class GameSettingsActivity extends AppCompatActivity {
 
-    SeekBar howManyDigits;
-    TextView numDigits;
+    SeekBar numDigitsSlider;
+    TextView numDigitsDisplay;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+
+        // [LAYOUT] Default layout creation.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_settings);
-        howManyDigits = findViewById(R.id.howManyDigits);
-        howManyDigits.setKeyProgressIncrement(1);
-        howManyDigits.setMax(9); // actually 8
-        howManyDigits.setMin(3);
 
-        numDigits = findViewById(R.id.numberOfDigits);
+        // [VIEWS] This is the display which says how many digits there are.
+        numDigitsDisplay = findViewById(R.id.numberOfDigits);
 
-        howManyDigits.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+        // [VIEWS] Initialize and configure slider.
+
+        // Initialize slider.
+        numDigitsSlider = findViewById(R.id.numDigitsSlider);
+
+        // Set progress, maximum and minimum value.
+        numDigitsSlider.setKeyProgressIncrement(1);
+        numDigitsSlider.setMax(9); // Is actually 8.
+        numDigitsSlider.setMin(3); // Is actually 2.
+
+        // Setup logic for when the slider is changed.
+        numDigitsSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
         {
             @Override
-
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
                 int notchValue = 1;
 
                 int alignedProgress = Math.round((float) progress / notchValue) * notchValue;
 
-                numDigits.setText("" + (alignedProgress - 1));
+                // Set the digits
+                numDigitsDisplay.setText("" + (alignedProgress - 1));
 
                 seekBar.setProgress(alignedProgress);
 
@@ -58,7 +70,7 @@ public class GameSettingsActivity extends AppCompatActivity {
 
     public void goToGameplayScreen(View view) {
         Intent intent = new Intent(this, GameplayActivity.class);
-        intent.putExtra("numberOfDigits", Integer.parseInt(String.valueOf(numDigits.getText())));
+        intent.putExtra("numberOfDigits", Integer.parseInt(String.valueOf(numDigitsDisplay.getText())));
         startActivity(intent);
         finish();
     }
