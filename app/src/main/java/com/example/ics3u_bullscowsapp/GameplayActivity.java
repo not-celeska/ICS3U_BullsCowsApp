@@ -303,7 +303,7 @@ public class GameplayActivity extends AppCompatActivity {
 
     }
 
-    // Parameters: [N / A]
+    // Parameters: [N / A] | Button-input based function.
     // Description: When a numbered button is pressed, it will add the number to the guess.
     public void addOne(View view) {
         addSymbolToGuess('1');
