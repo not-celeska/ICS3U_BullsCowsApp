@@ -8,7 +8,7 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/icon"
         android:label="BullsCows"
-        android:roundIcon="@drawable/round_icon"
+        android:roundIcon="@drawable/circle_icon_new"
         android:supportsRtl="true"
         android:theme="@style/Theme.ICS3U_BullsCowsApp"
         tools:targetApi="31" >
