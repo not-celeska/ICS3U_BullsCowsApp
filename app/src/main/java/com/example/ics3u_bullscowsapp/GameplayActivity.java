@@ -135,7 +135,7 @@ public class GameplayActivity extends AppCompatActivity {
         String formattedTime = formatTime(secondsElapsed);
 
         // [SCORE] Scuffly calculates the score based off: Guesses needed, time needed (in seconds), and number of digits.
-        int score = (int) (((10.0 / (1.0 * totalGuesses)) + (10.0 / (1.0 * secondsElapsed))) * 200.0 * (numDigitsInCorrectNumber - 1));
+        int score = (int) (((15.0 / (1.0 * totalGuesses)) + (10.0 / (1.0 * secondsElapsed))) * 200.0 * (numDigitsInCorrectNumber - 1));
 
         // [WIN SCREEN] Initialize the win screen with text and all.
         winScreen = getLayoutInflater().inflate(R.layout.win_screen, null);
@@ -256,7 +256,7 @@ public class GameplayActivity extends AppCompatActivity {
 
     // Parameters: [N / A] | Uses access to feilds.
     // Description: When the submit button is pressed, the guess is processed.
-    private void submit(View view) {
+    public void submit(View view) {
 
         // [CLARITY] Checks if there's enough digits in the guess to process it.
         if (guess.length() == numDigitsInCorrectNumber) {
@@ -286,7 +286,7 @@ public class GameplayActivity extends AppCompatActivity {
 
     // Parameters: [N / A] | Uses access to feilds.
     // Description: If the user makes a mistake, they can remove the last digit in their guess.
-    private void backspace(View view) {
+    public void backspace(View view) {
 
         // [CLARITY] Checks that the guess has more than 0 numbers in the guess.
         if (guess.length() > 0) {
