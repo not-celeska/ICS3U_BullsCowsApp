@@ -1,85 +1,120 @@
+// == FILE LOCATION ===================
 package com.example.ics3u_bullscowsapp;
 
+// == IMPORTS ==================================
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Random;
 
-// Dont worry about that stuff..
-
-
+// == GAMEPLAY SCREEN ===================================
 public class GameplayActivity extends AppCompatActivity {
 
-    // Correct number variables.
-    int numDigitsInCorrectNumber;
-    String correctNumber; // String is required for 0123 possibility.
-    ArrayList<Character> correctNumberCharacters;
+    // ==================================
+    // == CLASS VARAIABLES [FIELDS] =====
+    // ==================================
 
-    // Guess number variables.
-    String guess;
-    TextView guessDisplay;
+    // [FEILD] User stats.
+    private int totalGuesses;
+    private long startTime;
+    private long endTime;
 
-    // Feedback variables.
-    int[] guessFeedback = new int[2];
-    int BULLS = 0;
-    int COWS = 1;
+    // [FEILD] Correct number variables.
+    private int numDigitsInCorrectNumber;
+    private String correctNumber; // String is required for "0123" possibility.
+    private ArrayList<Character> correctNumberCharacters;
 
-    // Misc.
-    TextView resultsDisplay;
-    TextView errorMessageDisplay;
-    TextView correctNumberShow; // will remove this
-    TextView feedbackText;
-    View winScreen;
-    int totalGuesses;
-    long startTime;
-    long endTime;
+    // [FEILD] Guess number variables.
+    private TextView guessDisplay;
+    private String guess;
 
+    // [FEILD] Feedback variables.
+    private int[] guessFeedback = new int[2]; // [CLARITY] Where the feedback will be stored.
+    private final int BULLS = 0; // [CLARITY] This is just for the code to be more readable.
+    private final int COWS = 1; // [CLARITY] This is just for the code to be more readable.
+
+    // [FEILD] Miscellanious.
+    private TextView resultsDisplay;
+    private TextView errorMessageDisplay;
+    private TextView correctNumberShow; // TODO remove this
+    private TextView feedbackText;
+    private View winScreen;
+
+    // ==================================
+    // == CLASS METHODS [FUNCTIONS] =====
+    // ==================================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // [LAYOUT] Default layout creation.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gameplay);
 
-        // Initialize textfeilds, etc..
+        // [SETUP] Initialize textfeilds, etc..
+        setupViews();
+
+        // [SETUP] Start the game.
+        setupGameVariables();
+
+    }
+
+    // [SETUP] Initialize TextViews, etc.
+    private void setupViews() {
+
         guessDisplay = findViewById(R.id.guessDisplay);
         errorMessageDisplay = findViewById(R.id.errorMessageDisplay);
         errorMessageDisplay.setTextColor(Color.RED);
         correctNumberShow = findViewById(R.id.correctNumberDisplay);
+        resultsDisplay = findViewById(R.id.resultsDisplay);
         feedbackText = findViewById(R.id.feedbackText);
         feedbackText.setMovementMethod(new ScrollingMovementMethod());
-        resultsDisplay = findViewById(R.id.resultsDisplay);
 
-        // Start the game.
-        setupGameVariables();
     }
 
-    // Start main game.
-    public void setupGameVariables() {
+    // [SETUP] Setup the main game variables.
+    private void setupGameVariables() {
 
-        // Declare guess, generate
+        // [CLARITY] Takes the passed 'numberOfDigits' from the GameSettings class.
         numDigitsInCorrectNumber = getIntent().getIntExtra("numberOfDigits", 4);
         correctNumber = generateRandomNumber(numDigitsInCorrectNumber);
 
+        // TODO | == TO REMOVE =======================================
         correctNumberShow.setText("CORRECT NUMBER: " + correctNumber);
-        startTime = System.currentTimeMillis();
+        // TODO | == TO REMOVE =======================================
+
+        // [STATS] Initializes user stats.
         totalGuesses = 0;
         guess = "";
 
-        // in TUI, this is where the while loop would start..
+        // [TIME] Takes note of start time; will be used later.
+        startTime = System.currentTimeMillis();
+
+        // [THOUGHT] In a TUI, this is where the while loop would start.
 
     }
 
-    public void addNumberToGuess(char number) {
+    // ==================================
+    // == GAMEPLAY METHODS ==============
+    // ==================================
+
+    // Parameters: Any symbol | Only used for numbers; could be used for emoji's and such in the future.
+    // Description: Adds a number to the guess after checking a few conditions.
+    private void addSymbolToGuess(char symbol) {
+
+        // TODO: Check if the number has been entered before <-- give user a warning.
+
+        // [CLARITY] Is there already enough digits in the guess?
         if (guess.length() < numDigitsInCorrectNumber) {
-            // TODO: Check if the number has been entered before <-- give user a warning.
-            guess += number;
-            guessDisplay.setText(guess); // updates the text
+
+            guess += symbol; // [CLARITY] Concatenates the chosen number to the guess.
+            guessDisplay.setText(guess); // [CLARITY] Updates the display.
+
+            // [CLARITY] Just a warning which tells the user whether they need more numbers or not.
             if (guess.length() == numDigitsInCorrectNumber) {
                 errorMessageDisplay.setText("");
             }
@@ -90,191 +125,219 @@ public class GameplayActivity extends AppCompatActivity {
 
     }
 
-    public void submit(View view) {
-        if (guess.length() == numDigitsInCorrectNumber) {
-
-            // Process guess..
-            guessFeedback = getGuessFeedback(); // Feedback is the breakfast of champions!!!
-            feedbackText.append(formatFeedback(guessFeedback));
-
-            // Guess aftermath..
-
-            totalGuesses++;
-
-            // win condition..
-            if (guessFeedback[BULLS] == numDigitsInCorrectNumber) {
-                userWinsGame();
-            }
-
-            guessDisplay.setText("");
-            guess = "";
-
-
-        } else {
-            errorMessageDisplay.setText("Submission Error: \nNOT ENOUGH NUMBERS");
-        }
-    }
-
+    // Parameters: [N / A] | Uses access to feilds.
+    // Description: Calculates score, shows user their stats.
     private void userWinsGame() {
+
+        // [TIME] Takes note of end time; then processes it.
         endTime = System.currentTimeMillis();
         int secondsElapsed = Math.round((endTime - startTime) / 1000);
         String formattedTime = formatTime(secondsElapsed);
+
+        // [SCORE] Scuffly calculates the score based off: Guesses needed, time needed (in seconds), and number of digits.
         int score = (int) (((10.0 / (1.0 * totalGuesses)) + (10.0 / (1.0 * secondsElapsed))) * 200.0 * (numDigitsInCorrectNumber - 1));
 
-
-
-        // show win screen
+        // [WIN SCREEN] Initialize the win screen with text and all.
         winScreen = getLayoutInflater().inflate(R.layout.win_screen, null);
-
         TextView results = winScreen.findViewById(R.id.resultsDisplay);
         results.setText("CORRECT NUMBER: " + correctNumber + "\nGuesses: " + totalGuesses + "\nTime Taken: " + formattedTime + "\nSCORE: " + score);
 
+        // [BUTTON] Add a function to the 'OKAY!' button; to close the gameplay and go back to main menu.
         winScreen.findViewById(R.id.gameExitButton).setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+
+                // [CLARITY] Go back to the gameplay screen.
                 setContentView(R.layout.activity_gameplay);
+
+                // [CLARITY] Close the gameplay screen.
                 finish();
+
+                // [CLARITY] All the values reset because we 'close' this activity here.
             }
+
         });
 
+        // [TOGGLE SCREEN] This doesnt actually change the screen; just overlays it.
         setContentView(winScreen);
-        // reset all game values (ie leave
-
 
     }
 
-    public String formatTime(int seconds)
-    {
+    // Parameters: Seconds
+    // Description: Formats the time to minutes and seconds.
+    private String formatTime(int seconds) {
+
+        // [CLARITY] If there's only seconds, it will look like "#s".
         if (seconds < 60) {
-            return (seconds + "s");
+            return (seconds + "s"); // [EXAMPLE] | "23s"
         }
+
+        // [CLARITY] If there's both minutes and seconds, it will look like "#m #s".
         else
         {
-            return (seconds / 60) + "m " + (seconds % 60) + "s";
+            return (seconds / 60) + "m " + (seconds % 60) + "s"; // [EXAMPLE] | "1m 23s"
         }
+
     }
 
-    public void backspace(View view) {
-        if (guess.length() > 0) {
-            guess = guess.substring(0, (guess.length() - 1)); // returns the string without the last character.
-            guessDisplay.setText(guess); // updates the text
-            if (!(guess.length() == numDigitsInCorrectNumber)) {
-                errorMessageDisplay.setText("* Needs to be " + (numDigitsInCorrectNumber - guess.length()) + " numbers longer");
-            }
-        }
-    }
-
-    // == TODO: This is meh.. Try to make this easier..
-    public void addOne(View view) {
-        addNumberToGuess('1');
-    }
-
-    public void addTwo(View view) {
-        addNumberToGuess('2');
-    }
-
-    public void addThree(View view) {
-        addNumberToGuess('3');
-    }
-
-    public void addFour(View view) {
-        addNumberToGuess('4');
-    }
-
-    public void addFive(View view) {
-        addNumberToGuess('5');
-    }
-
-    public void addSix(View view) {
-        addNumberToGuess('6');
-    }
-
-    public void addSeven(View view) {
-        addNumberToGuess('7');
-    }
-
-    public void addEight(View view) {
-        addNumberToGuess('8');
-    }
-
-    public void addNine(View view) {
-        addNumberToGuess('9');
-    }
-
-    public void addZero(View view) {
-        addNumberToGuess('0');
-    }
-
-    public String formatFeedback(int[] feedback) {
+    // Parameters: The feedback given in a int array.
+    // Description: Formats the feedback to look presentable.
+    private String formatFeedback(int[] feedback) {
         return (totalGuesses + " | " + guess + " | " + feedback[BULLS] + "B" + feedback[COWS] + "C\n");
     }
 
-    public String generateRandomNumber(int numDigits)
-    {
+    // Parameters: The number of digits (which the user chose).
+    // Description: Generates a random number with the number of digits given.
+    private String generateRandomNumber(int numDigits) {
         Random numberGenerator = new Random();
         String randomNumber = "";
 
-        // 1. We will generate [numDigits] random numbers from 0-9.
+        // [THOUGHT] Doing each digit individually allows for:
+        // 1. Numbers to start with 0. Example | "0123".
+        // 2. More 'random' numbers than if generating a number from 1000 to 9999.
+
+        // [THOUGHT] Having each digit be unique allows for:
+        // 1. Better user experience.
+
+        // [LOOP] Loops through each digit generation numDigit times.
         for (int i = 0; i < numDigits; i++)
         {
             int randomDigit;
 
             randomDigit = numberGenerator.nextInt(10);
 
-            // b) Make sure each number in the integer is unique; helps us out later on when checking Bulls and Cows.
+            // [CLARITY] This checks whether the new randomDigit already appears in the generating number.
             if (randomNumber.contains(String.valueOf(randomDigit)))
             {
-                numDigits++; // This has the for loop go on one more time.
+                numDigits++; // [CLARITY] This will have the for loop go on one more time.
             }
             else
             {
-                randomNumber += randomDigit; // Adds it to the random number.
+                randomNumber += randomDigit; // Appends this random digit to the randomnumber.
             }
         }
 
         return randomNumber;
+
     }
 
-    // GET GUESS FEEDBACK: Takes the input and correctNumber, returns bulls (right number and place) and cows (right number wrong place)
-    public int[] getGuessFeedback()
-    {
-        int[] guessFeedback = {0, 0}; // Check "Array Indexing" class variables.
+    // Parameters: [N / A] | Uses access to feilds.
+    // Description: Compares the guess to the correct number and returns the Bulls and Cows.
+    public int[] getGuessFeedback() {
 
-        ArrayList<Character> guessArray = stringToCharArray(guess);
-        ArrayList<Character> correctArray = stringToCharArray(correctNumber); // this can be a class variable..
+        int[] guessFeedback = {0, 0};
 
-        // Go through the guessed array and compare it to the correct array.
+        // [LOOP] Go through the each digit and compare between the guess and correct numbers.
         for (int digitIndex = 0; digitIndex < String.valueOf(guess).length(); digitIndex++)
         {
-            // Is the guessed digit at the current index even in the correct number?
-            if (correctArray.contains(guessArray.get(digitIndex)))
+            // [CONDITION] Is the guessed digit even in the correct number?
+            if (correctNumber.contains(String.valueOf(guess.charAt(digitIndex))))
             {
-                // Is the digit in the same spot as the digit in the correct number?
-                if (guessArray.get(digitIndex) == correctArray.get(digitIndex))
+                // [CONDITION] Is the digit in the same spot as the digit in the correct number?
+                if (guess.charAt(digitIndex) == correctNumber.charAt(digitIndex))
                 {
-                    guessFeedback[BULLS]++;
+                    guessFeedback[BULLS]++; // [REMINDER] Bulls refers to the value at index 0.
                 }
                 else
                 {
-                    guessFeedback[COWS]++;
+                    guessFeedback[COWS]++; // [REMINDER] Cows refers to the value at index 1.
                 }
             }
         }
 
         return guessFeedback;
+
     }
 
-    public ArrayList<Character> stringToCharArray(String textString)
-    {
-        ArrayList<Character> characterArrayList = new ArrayList<>();
+    // ==================================
+    // == KEYPAD METHODS ================
+    // ==================================
 
-        for (int characterIndex = 0; characterIndex < textString.length(); characterIndex++)
-        {
-            characterArrayList.add(textString.charAt(characterIndex));
+    // Parameters: [N / A] | Uses access to feilds.
+    // Description: When the submit button is pressed, the guess is processed.
+    private void submit(View view) {
+
+        // [CLARITY] Checks if there's enough digits in the guess to process it.
+        if (guess.length() == numDigitsInCorrectNumber) {
+
+            // [FEEDBACK] Gets the feedback & Writes it in the feedbackText.
+            guessFeedback = getGuessFeedback(); // [THOUGHT] "Feedback is the breakfast of champions!"
+            feedbackText.append(formatFeedback(guessFeedback));
+
+            totalGuesses++; // [CLARITY] Updates the total guesses took.
+
+            // [WIN CONDITION] Calls on the win condition.
+            if (guessFeedback[BULLS] == numDigitsInCorrectNumber) {
+                userWinsGame();
+            }
+
+            // [RESET] Reset the guess for next turn.
+            guessDisplay.setText("");
+            guess = "";
+
+
+        }
+        else {
+            errorMessageDisplay.setText("Submission Error: \nNOT ENOUGH NUMBERS");
         }
 
-        return characterArrayList;
+    }
+
+    // Parameters: [N / A] | Uses access to feilds.
+    // Description: If the user makes a mistake, they can remove the last digit in their guess.
+    private void backspace(View view) {
+
+        // [CLARITY] Checks that the guess has more than 0 numbers in the guess.
+        if (guess.length() > 0) {
+
+            // [CLARITY] Updates the current guess without its last digit.
+            guess = guess.substring(0, (guess.length() - 1));
+            guessDisplay.setText(guess);
+
+            // [CLARITY] Will update the guess length warning.
+            if (!(guess.length() == numDigitsInCorrectNumber)) {
+                errorMessageDisplay.setText("* Needs to be " + (numDigitsInCorrectNumber - guess.length()) + " numbers longer");
+            }
+        }
 
     }
+
+    // Parameters: [N / A]
+    // Description: When a numbered button is pressed, it will add the number to the guess.
+    public void addOne(View view) {
+        addSymbolToGuess('1');
+    }
+    public void addTwo(View view) {
+        addSymbolToGuess('2');
+    }
+    public void addThree(View view) {
+        addSymbolToGuess('3');
+    }
+    public void addFour(View view) {
+        addSymbolToGuess('4');
+    }
+    public void addFive(View view) {
+        addSymbolToGuess('5');
+    }
+    public void addSix(View view) {
+        addSymbolToGuess('6');
+    }
+    public void addSeven(View view) {
+        addSymbolToGuess('7');
+    }
+    public void addEight(View view) {
+        addSymbolToGuess('8');
+    }
+    public void addNine(View view) {
+        addSymbolToGuess('9');
+    }
+    public void addZero(View view) {
+        addSymbolToGuess('0');
+    }
+
+    // [NOTE] The reasons why there are 10 separate methods for this is because:
+    // 1. Parameters are illegal in the OnClick attribute in buttons.
+    // 2. Having a list with the initialized button ids and doing it manually is less efficient.
 
 }

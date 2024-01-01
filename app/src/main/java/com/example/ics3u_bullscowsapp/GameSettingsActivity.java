@@ -12,7 +12,6 @@ import android.widget.TextView;
 // == GAME SETTINGS MENU ====================================
 public class GameSettingsActivity extends AppCompatActivity {
 
-    SeekBar numDigitsSlider;
     TextView numDigitsDisplay;
 
     @Override
@@ -27,8 +26,8 @@ public class GameSettingsActivity extends AppCompatActivity {
 
         // [VIEWS] Initialize and configure slider.
 
-        // Initialize slider.
-        numDigitsSlider = findViewById(R.id.numDigitsSlider);
+        // Declare and initialize slider.
+        SeekBar numDigitsSlider = findViewById(R.id.numDigitsSlider);
 
         // Set progress, maximum and minimum value.
         numDigitsSlider.setKeyProgressIncrement(1);
@@ -41,37 +40,44 @@ public class GameSettingsActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-                int notchValue = 1;
+                // Determine the current value at which the slider is at.
+                int alignedProgress = Math.round((float) progress);
 
-                int alignedProgress = Math.round((float) progress / notchValue) * notchValue;
-
-                // Set the digits
-                numDigitsDisplay.setText("" + (alignedProgress - 1));
-
-                seekBar.setProgress(alignedProgress);
+                // Update the digits display.
+                numDigitsDisplay.setText(String.valueOf(alignedProgress - 1));
 
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                // [CLARITY] This is just an implemented function; it isn't used.
+                // TODO: Add colours?
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                // [CLARITY] This is just an implemented function; it isn't used.
             }
         });
     }
 
+    // ==================================
+    // == MENU BUTTON FUNCTIONS =========
+    // ==================================
+
+    // [MENU] Return to main menu; closes the activity.
     public void returnToMainMenu(View view) {
         finish();
     }
 
+    // [MENU] Opens the gameplay screen; passes in number of digits.
     public void goToGameplayScreen(View view) {
         Intent intent = new Intent(this, GameplayActivity.class);
         intent.putExtra("numberOfDigits", Integer.parseInt(String.valueOf(numDigitsDisplay.getText())));
         startActivity(intent);
+
+        // [CLARITY] When user closes the gameplay (via win or close activity), user goes to the main menu immediately.
         finish();
     }
+
 }

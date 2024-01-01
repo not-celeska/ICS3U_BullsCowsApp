@@ -40,4 +40,5 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, GameSettingsActivity.class);
         startActivity(intent);
     }
+
 }

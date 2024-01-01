@@ -18,8 +18,9 @@ public class InfoActivity extends AppCompatActivity {
 
     }
 
-    // [MENU] Return to main menu.
-    public void returnToMainMenu(View view) {
+    // [MENU] Return to main menu; closes the activity.
+     public void returnToMainMenu(View view) {
         finish();
     }
+
 }
