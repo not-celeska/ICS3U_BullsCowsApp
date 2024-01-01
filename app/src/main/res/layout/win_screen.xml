@@ -7,9 +7,9 @@
     android:background="@color/green_light">
 
     <TextView
-        android:id="@+id/textView3"
-        android:layout_width="238dp"
-        android:layout_height="585dp"
+        android:id="@+id/resultsDisplay"
+        android:layout_width="325dp"
+        android:layout_height="580dp"
         android:text="YOU WIN!\n\n\nSTATS GO HERE.."
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/gameExitButton"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="223dp"
         android:layout_height="57dp"

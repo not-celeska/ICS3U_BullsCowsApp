@@ -60,5 +60,6 @@ public class GameSettingsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, GameplayActivity.class);
         intent.putExtra("numberOfDigits", Integer.parseInt(String.valueOf(numDigits.getText())));
         startActivity(intent);
+        finish();
     }
 }

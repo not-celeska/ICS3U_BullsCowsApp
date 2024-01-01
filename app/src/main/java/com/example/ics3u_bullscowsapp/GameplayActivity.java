@@ -31,10 +31,14 @@ public class GameplayActivity extends AppCompatActivity {
     int COWS = 1;
 
     // Misc.
+    TextView resultsDisplay;
     TextView errorMessageDisplay;
     TextView correctNumberShow; // will remove this
     TextView feedbackText;
+    View winScreen;
     int totalGuesses;
+    long startTime;
+    long endTime;
 
 
     @Override
@@ -49,6 +53,7 @@ public class GameplayActivity extends AppCompatActivity {
         correctNumberShow = findViewById(R.id.correctNumberDisplay);
         feedbackText = findViewById(R.id.feedbackText);
         feedbackText.setMovementMethod(new ScrollingMovementMethod());
+        resultsDisplay = findViewById(R.id.resultsDisplay);
 
         // Start the game.
         setupGameVariables();
@@ -60,7 +65,9 @@ public class GameplayActivity extends AppCompatActivity {
         // Declare guess, generate
         numDigitsInCorrectNumber = getIntent().getIntExtra("numberOfDigits", 4);
         correctNumber = generateRandomNumber(numDigitsInCorrectNumber);
+
         correctNumberShow.setText("CORRECT NUMBER: " + correctNumber);
+        startTime = System.currentTimeMillis();
         totalGuesses = 0;
         guess = "";
 
@@ -91,18 +98,59 @@ public class GameplayActivity extends AppCompatActivity {
             feedbackText.append(formatFeedback(guessFeedback));
 
             // Guess aftermath..
-            guessDisplay.setText("");
-            guess = "";
+
             totalGuesses++;
 
             // win condition..
-            if (guessFeedback[BULLS] == 4) {
-
+            if (guessFeedback[BULLS] == numDigitsInCorrectNumber) {
+                userWinsGame();
             }
+
+            guessDisplay.setText("");
+            guess = "";
 
 
         } else {
             errorMessageDisplay.setText("Submission Error: \nNOT ENOUGH NUMBERS");
+        }
+    }
+
+    private void userWinsGame() {
+        endTime = System.currentTimeMillis();
+        int secondsElapsed = Math.round((endTime - startTime) / 1000);
+        String formattedTime = formatTime(secondsElapsed);
+        int score = (int) (((10.0 / (1.0 * totalGuesses)) + (10.0 / (1.0 * secondsElapsed))) * 200.0 * (numDigitsInCorrectNumber - 1));
+
+
+
+        // show win screen
+        winScreen = getLayoutInflater().inflate(R.layout.win_screen, null);
+
+        TextView results = winScreen.findViewById(R.id.resultsDisplay);
+        results.setText("CORRECT NUMBER: " + correctNumber + "\nGuesses: " + totalGuesses + "\nTime Taken: " + formattedTime + "\nSCORE: " + score);
+
+        winScreen.findViewById(R.id.gameExitButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.activity_gameplay);
+                finish();
+            }
+        });
+
+        setContentView(winScreen);
+        // reset all game values (ie leave
+
+
+    }
+
+    public String formatTime(int seconds)
+    {
+        if (seconds < 60) {
+            return (seconds + "s");
+        }
+        else
+        {
+            return (seconds / 60) + "m " + (seconds % 60) + "s";
         }
     }
 
@@ -160,8 +208,6 @@ public class GameplayActivity extends AppCompatActivity {
     public String formatFeedback(int[] feedback) {
         return (totalGuesses + " | " + guess + " | " + feedback[BULLS] + "B" + feedback[COWS] + "C\n");
     }
-
-
 
     public String generateRandomNumber(int numDigits)
     {
