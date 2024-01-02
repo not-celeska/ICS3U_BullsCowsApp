@@ -40,9 +40,8 @@ public class GameplayActivity extends AppCompatActivity {
     // [FEILD] Miscellanious.
     private TextView resultsDisplay;
     private TextView errorMessageDisplay;
-    private TextView correctNumberShow; // TODO remove this
+    private TextView correctNumberShow; // TODO: remove this =====
     private TextView feedbackText;
-    private View winScreen;
 
     // ==================================
     // == CLASS METHODS [FUNCTIONS] =====
@@ -81,7 +80,16 @@ public class GameplayActivity extends AppCompatActivity {
 
         // [CLARITY] Takes the passed 'numberOfDigits' from the GameSettings class.
         numDigitsInCorrectNumber = getIntent().getIntExtra("numberOfDigits", 4);
-        correctNumber = generateRandomNumber(numDigitsInCorrectNumber);
+
+        // [CLARITY] If the passed 'twoPlayerMode' is true; if the two player mode checkbox was pressed.
+        if (getIntent().getBooleanExtra("twoPlayerMode", false)) {
+            // get a player to enter a number
+            View numberEnterScreen = getLayoutInflater().inflate(R.layout.two_player_enter, null);
+            setContentView(numberEnterScreen);
+        }
+        else { // i.e., singleplayer mode.
+            correctNumber = generateRandomNumber(numDigitsInCorrectNumber);
+        }
 
         // TODO | == TO REMOVE =======================================
         correctNumberShow.setText("CORRECT NUMBER: " + correctNumber);
@@ -138,7 +146,7 @@ public class GameplayActivity extends AppCompatActivity {
         int score = (int) (((15.0 / (1.0 * totalGuesses)) + (10.0 / (1.0 * secondsElapsed))) * 200.0 * (numDigitsInCorrectNumber - 1));
 
         // [WIN SCREEN] Initialize the win screen with text and all.
-        winScreen = getLayoutInflater().inflate(R.layout.win_screen, null);
+        View winScreen = getLayoutInflater().inflate(R.layout.win_screen, null);
         TextView results = winScreen.findViewById(R.id.resultsDisplay);
         results.setText("CORRECT NUMBER: " + correctNumber + "\nGuesses: " + totalGuesses + "\nTime Taken: " + formattedTime + "\nSCORE: " + score);
 
@@ -338,6 +346,6 @@ public class GameplayActivity extends AppCompatActivity {
 
     // [NOTE] The reasons why there are 10 separate methods for this is because:
     // 1. Parameters are illegal in the OnClick attribute in buttons.
-    // 2. Having a list with the initialized button ids and doing it manually is less efficient.
+    // 2. Having a list with the initialized button ids and assigning ActionListeners manually is less efficient.
 
 }

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import android.widget.TextView;
 public class GameSettingsActivity extends AppCompatActivity {
 
     TextView numDigitsDisplay;
+    CheckBox twoPlayerToggle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,6 +25,9 @@ public class GameSettingsActivity extends AppCompatActivity {
 
         // [VIEWS] This is the display which says how many digits there are.
         numDigitsDisplay = findViewById(R.id.numberOfDigits);
+
+        // [VIEWS] This is the two player checkbox toggle.
+        twoPlayerToggle = findViewById(R.id.twoPlayerToggle);
 
         // [VIEWS] Initialize and configure slider.
 
@@ -73,6 +78,7 @@ public class GameSettingsActivity extends AppCompatActivity {
     // [MENU] Opens the gameplay screen; passes in number of digits.
     public void goToGameplayScreen(View view) {
         Intent intent = new Intent(this, GameplayActivity.class);
+        intent.putExtra("twoPlayerMode", twoPlayerToggle.isActivated());
         intent.putExtra("numberOfDigits", Integer.parseInt(String.valueOf(numDigitsDisplay.getText())));
         startActivity(intent);
 
