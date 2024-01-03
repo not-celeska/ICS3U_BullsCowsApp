@@ -82,8 +82,8 @@ public class GameplayActivity extends AppCompatActivity {
 
         // [CLARITY] Takes the passed 'numberOfDigits' from the GameSettings class.
         numDigitsInCorrectNumber = getIntent().getIntExtra("numberOfDigits", 4);
-        correctNumber = generateRandomNumber(numDigitsInCorrectNumber);
-        //        getCorrectNumber();
+//        correctNumber = generateRandomNumber(numDigitsInCorrectNumber);
+                getCorrectNumber();
 
 
         // TODO | == TO REMOVE =======================================
@@ -148,6 +148,7 @@ public class GameplayActivity extends AppCompatActivity {
                     {
                         correctNumber = correctNumberProposal;
                         setContentView(R.layout.activity_gameplay);
+                        setupViews();//???
                     }
                 }
             });
