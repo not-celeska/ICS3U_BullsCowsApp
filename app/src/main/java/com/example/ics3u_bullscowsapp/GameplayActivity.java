@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Random;
@@ -80,16 +82,9 @@ public class GameplayActivity extends AppCompatActivity {
 
         // [CLARITY] Takes the passed 'numberOfDigits' from the GameSettings class.
         numDigitsInCorrectNumber = getIntent().getIntExtra("numberOfDigits", 4);
+        correctNumber = generateRandomNumber(numDigitsInCorrectNumber);
+        //        getCorrectNumber();
 
-        // [CLARITY] If the passed 'twoPlayerMode' is true; if the two player mode checkbox was pressed.
-        if (getIntent().getBooleanExtra("twoPlayerMode", false)) {
-            // get a player to enter a number
-            View numberEnterScreen = getLayoutInflater().inflate(R.layout.two_player_enter, null);
-            setContentView(numberEnterScreen);
-        }
-        else { // i.e., singleplayer mode.
-            correctNumber = generateRandomNumber(numDigitsInCorrectNumber);
-        }
 
         // TODO | == TO REMOVE =======================================
         correctNumberShow.setText("CORRECT NUMBER: " + correctNumber);
@@ -109,6 +104,61 @@ public class GameplayActivity extends AppCompatActivity {
     // ==================================
     // == GAMEPLAY METHODS ==============
     // ==================================
+
+    private void getCorrectNumber() {
+        // [CLARITY] If the passed 'twoPlayerMode' is true; if the two player mode checkbox was pressed.
+        if (getIntent().getBooleanExtra("twoPlayerMode", false)) {
+            // get a player to enter a number
+            View numberEnterScreen = getLayoutInflater().inflate(R.layout.two_player_enter, null);
+            TextView digitSpecification = numberEnterScreen.findViewById(R.id.twoPlayerDigits);
+            digitSpecification.setText("ENTER A NUMBER [" + numDigitsInCorrectNumber + "] DIGITS: ");
+            TextView warningDisplay = numberEnterScreen.findViewById(R.id.warningDisplay);
+            EditText numberEnter = numberEnterScreen.findViewById(R.id.numberEnter);
+            Button enterNumberButton = numberEnterScreen.findViewById(R.id.enterButton);
+            Button cancelButton = numberEnterScreen.findViewById(R.id.cancelTwoPlayer);
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+
+            enterNumberButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String correctNumberProposal = String.valueOf(numberEnter.getText());
+                    warningDisplay.setTextColor(Color.RED);
+                    warningDisplay.setText("WARNINGS:\n");
+
+                    if (correctNumberProposal.length() != numDigitsInCorrectNumber) {
+                        warningDisplay.append(" - NUMBER NEEDS TO HAVE " + numDigitsInCorrectNumber + " DIGITS\n");
+
+                        if (!allDigitsAreUnique(correctNumberProposal)) {
+                            warningDisplay.append(" - ALL DIGITS MUST BE UNIQUE\n");
+                        }
+                    }
+                    else if (!allDigitsAreUnique(correctNumberProposal)) {
+                        warningDisplay.append(" - ALL DIGITS MUST BE UNIQUE\n");
+
+                        if (correctNumberProposal.length() != numDigitsInCorrectNumber) {
+                            warningDisplay.append(" - NUMBER NEEDS TO HAVE " + numDigitsInCorrectNumber + " DIGITS\n");
+                        }
+                    }
+                    else
+                    {
+                        correctNumber = correctNumberProposal;
+                        setContentView(R.layout.activity_gameplay);
+                    }
+                }
+            });
+
+            setContentView(numberEnterScreen);
+        }
+        else { // i.e., singleplayer mode.
+            correctNumber = generateRandomNumber(numDigitsInCorrectNumber);
+        }
+
+    }
 
     // Parameters: Any symbol | Only used for numbers; could be used for emoji's and such in the future.
     // Description: Adds a number to the guess after checking a few conditions.
@@ -258,6 +308,38 @@ public class GameplayActivity extends AppCompatActivity {
 
     }
 
+    // ALL DIGITS ARE UNIQUE: Checks that all the digits in a number are unique - this will help not confuse the player in the feedback.
+    public boolean allDigitsAreUnique(String number)
+    {
+        // Go through the whole list to compare each number individually.
+        for (int digitIndex = 0; digitIndex < number.length(); digitIndex++)
+        {
+            // Get the digit itself and set how many times it was found to 0.
+            int currentDigit = Character.getNumericValue(number.charAt(digitIndex));
+            int timesDigitFound = 0;
+
+            // Go through the list again to determine how many times this digit appears in the number.
+            for (int allDigits = 0; allDigits < number.length(); allDigits++)
+            {
+                // If the digit appeared in the number.
+                if (currentDigit == Character.getNumericValue(number.charAt(allDigits)))
+                {
+                    timesDigitFound ++;
+                }
+            }
+
+            // If the digit ended up showing more than once.
+            if (timesDigitFound > 1)
+            {
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+
     // ==================================
     // == KEYPAD METHODS ================
     // ==================================
@@ -310,6 +392,13 @@ public class GameplayActivity extends AppCompatActivity {
         }
 
     }
+
+    // Parameters: [N / A] | Needs no parameters.
+    // Description: If the user decides to quit the round, they can press this button.
+    public void quit(View view) {
+        finish();
+    }
+
 
     // Parameters: [N / A] | Button-input based function.
     // Description: When a numbered button is pressed, it will add the number to the guess.

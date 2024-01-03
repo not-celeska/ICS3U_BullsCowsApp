@@ -36,8 +36,9 @@ public class GameSettingsActivity extends AppCompatActivity {
 
         // Set progress, maximum and minimum value.
         numDigitsSlider.setKeyProgressIncrement(1);
-        numDigitsSlider.setMax(9); // Is actually 8.
-        numDigitsSlider.setMin(3); // Is actually 2.
+        numDigitsSlider.setMax(11); // Is actually 8.
+        numDigitsSlider.setMin(2); // Is actually 2.
+        numDigitsSlider.setProgress(5);
 
         // Setup logic for when the slider is changed.
         numDigitsSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
@@ -78,7 +79,7 @@ public class GameSettingsActivity extends AppCompatActivity {
     // [MENU] Opens the gameplay screen; passes in number of digits.
     public void goToGameplayScreen(View view) {
         Intent intent = new Intent(this, GameplayActivity.class);
-        intent.putExtra("twoPlayerMode", twoPlayerToggle.isActivated());
+        intent.putExtra("twoPlayerMode", twoPlayerToggle.isChecked());
         intent.putExtra("numberOfDigits", Integer.parseInt(String.valueOf(numDigitsDisplay.getText())));
         startActivity(intent);
 
